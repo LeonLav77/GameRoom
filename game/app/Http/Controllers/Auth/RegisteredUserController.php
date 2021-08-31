@@ -7,10 +7,12 @@ use App\Models\User;
 use App\Providers\RouteServiceProvider;
 use Illuminate\Auth\Events\Registered;
 use Illuminate\Http\Request;
+use Illuminate\Routing\Route;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Validation\Rules;
-use Inertia\Inertia;
+use Illuminate\Support\Facades\Redirect;
+use Illuminate\Support\Facades\Storage;
 
 class RegisteredUserController extends Controller
 {
@@ -21,7 +23,8 @@ class RegisteredUserController extends Controller
      */
     public function create()
     {
-        return Inertia::render('Auth/Register');
+        Redirect::setIntendedUrl(url()->previous());
+        return view('auth.register');
     }
 
     /**
@@ -34,15 +37,18 @@ class RegisteredUserController extends Controller
      */
     public function store(Request $request)
     {
+        //$path = $request->file('picture')->store('public/user_avatar');
+        //$result = str_replace("public", "storage", $path);
         $request->validate([
             'name' => 'required|string|max:255',
             'email' => 'required|string|email|max:255|unique:users',
             'password' => ['required', 'confirmed', Rules\Password::defaults()],
         ]);
-
+        // storage/user_avatar/id
         $user = User::create([
             'name' => $request->name,
             'email' => $request->email,
+            //'image' => $result,
             'password' => Hash::make($request->password),
         ]);
 
@@ -50,6 +56,6 @@ class RegisteredUserController extends Controller
 
         Auth::login($user);
 
-        return redirect(RouteServiceProvider::HOME);
+        return redirect()->intended(RouteServiceProvider::HOME);
     }
 }

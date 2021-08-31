@@ -1,8 +1,10 @@
 <?php
 
 use Inertia\Inertia;
+use App\Events\MyEvent;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Foundation\Application;
+use App\Http\Controllers\RoomController;
 use App\Http\Controllers\IndexController;
 
 /*
@@ -15,6 +17,13 @@ use App\Http\Controllers\IndexController;
 | contains the "web" middleware group.s Now create something great!
 |
 */
-Route::get('/', [IndexController::class,'index']);
+Route::view('/noAccess', 'noAccess');
 
+Route::post('/yes', [RoomController::class, 'test']);
+
+Route::post('/joinRoom', [RoomController::class, 'joinRoom']);
+
+Route::group(['middleware' => ['protectedPage']], function () {
+    Route::get('/', [IndexController::class,'index']);
+});
 require __DIR__.'/auth.php';
