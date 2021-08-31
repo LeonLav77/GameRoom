@@ -21,7 +21,7 @@ Route::view('/noAccess', 'noAccess');
 
 Route::post('/yes', [RoomController::class, 'test']);
 
-Route::post('/joinRoom', [RoomController::class, 'joinRoom']);
+Route::post('/joinRoom', [RoomController::class, 'tryToJoinRoom']);
 
 Route::group(['middleware' => ['protectedPage']], function () {
     Route::get('/', [IndexController::class,'index']);
