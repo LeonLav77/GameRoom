@@ -18,10 +18,11 @@ class RoomController extends Controller
     {
         $data = $this->checkIfRoomExists();
         event(new MyEvent($data));
+        return(Active_Game::latest()->first()->key);
     }
     public function joinRoom(){
         Active_Game::latest()->first()->update(['user2' => Auth::id()]);
-        Active_Game::latest()->first()->setStatus('commenced');
+        Active_Game::latest()->first()->update(['status' => 'full']);
         event(new MyEvent('joined room'));
 
     }
@@ -32,18 +33,23 @@ class RoomController extends Controller
             if (Active_Game::latest()->first()->status == 'waiting') {
                 $this->joinRoom();
                 return("waiting");
+            }else{
+                return ($this->createRoom($id));
             }
-            else {
-                $key = Str::random(32);
-                $room = new Active_Game([
-                    'key' => $key,
-                    'user1' => $id,
-                    'created_at' => now(),
-                ]);
-                $room->save();
-                Active_Game::latest()->first()->setStatus('waiting');
-                return("created");
+        }else{
+            return ($this->createRoom($id));
         }
-        }
+
+    }
+    public function createRoom($id){
+            $key = Str::random(32);
+            $room = new Active_Game([
+                'key' => $key,
+                'user1' => $id,
+                'status' => 'waiting',
+                'created_at' => now(),
+            ]);
+            $room->save();
+            return("created");
     }
 }

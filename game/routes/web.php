@@ -23,6 +23,8 @@ Route::post('/yes', [RoomController::class, 'test']);
 
 Route::post('/joinRoom', [RoomController::class, 'tryToJoinRoom']);
 
+Route::get('/game/{key}', [IndexController::class,'gameRoom']);
+
 Route::group(['middleware' => ['protectedPage']], function () {
     Route::get('/', [IndexController::class,'index']);
 });

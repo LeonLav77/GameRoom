@@ -16,6 +16,7 @@ class CreateActiveGamesTable extends Migration
         Schema::create('active_games', function (Blueprint $table) {
             $table->increments('id');
             $table->string('key')->unique();
+            $table->string('status')->nullable();
             $table->foreignId('user1')->nullable();
             $table->foreignId('user2')->nullable();
             $table->timestamps();

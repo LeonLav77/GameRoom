@@ -13,18 +13,7 @@
         channel.listen('MyEvent', function(data) {
             console.log(data);
         });
-        function Test() {
-            $.ajax({
-                type: "POST",
-                headers: {
-                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
-                },
-                data:{
-                    message: 'Join Room'
-                },
-                url: "/yes",
-            });
-        }
+
         function JoinRoom() {
             $.ajax({
                 type: "POST",
@@ -32,13 +21,16 @@
                     'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
                 },
                 url: "/joinRoom",
+                success: function(data) {
+                    console.log(data);
+                    window.location.replace("/game/"+data);
+                }
             });
         }
     </script>
 </head>
 <body>
 
-    <button onclick="Test()">test</button>
     <button onclick="JoinRoom()">Join the room</button>
 
 </body>
