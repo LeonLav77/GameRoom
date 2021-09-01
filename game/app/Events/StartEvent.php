@@ -12,7 +12,7 @@ use Illuminate\Foundation\Events\Dispatchable;
 use Illuminate\Broadcasting\InteractsWithSockets;
 use Illuminate\Contracts\Broadcasting\ShouldBroadcast;
 
-class SendMove implements ShouldBroadcast
+class StartEvent implements ShouldBroadcast
 {
     use Dispatchable, InteractsWithSockets, SerializesModels;
 
@@ -22,20 +22,15 @@ class SendMove implements ShouldBroadcast
      * @return void
      */
     public string $key;
-    public string $move;
-    public string $id;
-    public string $yourSymbol;
 
-    public function __construct(string $key, string $move, int $id, string $yourSymbol)
+
+    public function __construct(string $key)
     {
         $this->key = $key;
-        $this->move = $move;
-        $this->id = $id;
-        $this->yourSymbol = $yourSymbol;
     }
     public function broadcastWith()
     {
-        return ['move' => $this->move,'symbol'=>$this->yourSymbol];
+        return ['message'=> 'GAME STARTS'];
     }
     /**
      * Get the channels the event should broadcast on.

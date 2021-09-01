@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script src="/js/bPopup.js"></script>
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <link href="{{ url('/css/ticTacToe.css') }}" rel="stylesheet">
     <title>{{$key}}</title>
@@ -18,12 +19,17 @@
             console.log(data);
             $("#player2").html(data.name);
             window.state = "ready";
-
         });
+
         channel.listen('SendMove', function(data) {
             console.log(data);
-            putSymbol(data.move,'X')
+            putSymbol(data.move,data.symbol);
         });
+        channel.listen('StartEvent', function(data) {
+            startGame();
+        });
+
+
         function putSymbol(id,symbol){
             console.log(window.array);
             $("#"+id).unbind();
@@ -36,12 +42,8 @@
             console.log(window.array);
         }
         function startGame(){
-            if(window.state == "ready"){
-                window.state = "playing";
-                alert("GAME STARTED")
-            }else{
-                alert("error");
-            }
+            alert('STARTED I HOPE')
+            startingMechancis();
         }
         function sendMove(key,move){
             $.ajax({
@@ -62,8 +64,25 @@
                 });
         }
 
+        function sendStartNotif(){
+            $.ajax({
+                dataType: 'json',
+                headers: {
+                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                },
+                url: '/sendStartNotif',
+                type: 'post',
+                data: {
+                    'key':"{{$key}}",
+                },
+                success: function(response) {
+                    console.log(response);
 
-        $(document).ready(function(){
+                }
+                });
+        }
+
+        function startingMechancis(){
             window.array = [];
             $("#board").find("span").each(function () {
                 window.array.push(this);
@@ -76,6 +95,29 @@
                 }
                 );
             }
+        }
+        function sendReadyNotification(){
+            $.ajax({
+                dataType: 'json',
+                headers: {
+                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                },
+                url: '/sendReadyNotification',
+                type: 'post',
+                data: {
+                    'key':"{{$key}}",
+                },
+                success: function(response) {
+                    console.log(response);
+                }
+                });
+        }
+        $(document).ready(function () {
+            $('#element_to_pop_up').bPopup({
+                    onClose: function(){
+                        sendReadyNotification();
+                    }
+                });
         });
     </script>
 </head>
@@ -98,6 +140,9 @@
             </div>
             <button id="reset">Reset</button>
         </div>
+    </div>
+    <div id="element_to_pop_up" style="display: none;" class="basic-grid">
+        <h1>Are you ready</h1>
     </div>
 </body>
 </html>
