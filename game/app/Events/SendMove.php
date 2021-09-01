@@ -12,7 +12,7 @@ use Illuminate\Foundation\Events\Dispatchable;
 use Illuminate\Broadcasting\InteractsWithSockets;
 use Illuminate\Contracts\Broadcasting\ShouldBroadcast;
 
-class GameRoomJoin implements ShouldBroadcast
+class SendMove implements ShouldBroadcast
 {
     use Dispatchable, InteractsWithSockets, SerializesModels;
 
@@ -22,16 +22,18 @@ class GameRoomJoin implements ShouldBroadcast
      * @return void
      */
     public string $key;
-    public string $name;
+    public string $move;
+    public string $id;
 
-    public function __construct(string $key, string $name)
+    public function __construct(string $key, string $move, int $id)
     {
         $this->key = $key;
-        $this->name = $name;
+        $this->move = $move;
+        $this->id = $id;
     }
     public function broadcastWith()
     {
-        return ['message' => $this->name . ' joined the room','name' => $this->name];
+        return ['move' => $this->move];
     }
     /**
      * Get the channels the event should broadcast on.

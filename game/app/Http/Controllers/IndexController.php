@@ -20,6 +20,11 @@ class IndexController extends Controller
             $user2 = Active_Game::where('key', $key)->first()->player1;
         }
         event(new GameRoomJoin($key,$user->name));
-        return view('gameRoom',['key'=>$key,'player1' => $user->name, 'player2' => $user2->name]);
+        if($user2 == null){
+            $user2Name = "Waiting for player 2";
+        }else{
+            $user2Name = $user2->name;
+        }
+        return view('gameRoom',['key'=>$key,'player1' => $user->name, 'player2' => $user2Name,'id'=>$user->id]);
     }
 }

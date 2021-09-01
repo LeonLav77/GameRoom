@@ -14,7 +14,7 @@ class Active_Game extends Model
         'id',
         'key',
         'status',
-        'id',
+        'user1',
         'user2',
         'created_at',
         'updated_at',

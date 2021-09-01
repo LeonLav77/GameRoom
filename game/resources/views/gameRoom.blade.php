@@ -7,44 +7,85 @@
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <link href="{{ url('/css/ticTacToe.css') }}" rel="stylesheet">
     <title>{{$key}}</title>
+    <meta name="csrf-token" content="{{ csrf_token() }}" />
     <script src="/js/app.js"></script>
     <script>
+        if("{{$player2}}" == 'Waiting for player 2'){
+            window.state = "waiting";
+        }
         var channel = Echo.channel("{{$key}}");
         channel.listen('GameRoomJoin', function(data) {
             console.log(data);
+            $("#player2").html(data.name);
+            window.state = "ready";
+
         });
-        function putX(id){
+        channel.listen('SendMove', function(data) {
+            console.log(data);
+            putSymbol(data.move,'X')
+        });
+        function putSymbol(id,symbol){
             console.log(window.array);
+            $("#"+id).unbind();
             $currentElement = $('#'+id);
-            let child = document.createElement('h1');
-            child.setAttribute('name','X');
-            child.innerHTML = 'X';
+            let child = document.createElement('h4');
+            child.setAttribute('name',symbol);
+            child.innerHTML = symbol;
             $currentElement.append(child);
-            // $currentElement.text('X');
+            (window.array).splice((id.split("-")[1]) ,1);
+            console.log(window.array);
         }
+        function startGame(){
+            if(window.state == "ready"){
+                window.state = "playing";
+                alert("GAME STARTED")
+            }else{
+                alert("error");
+            }
+        }
+        function sendMove(key,move){
+            $.ajax({
+                dataType: 'json',
+                headers: {
+                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                },
+                url: '/sendMove',
+                type: 'post',
+                data:{
+                    'key':key,
+                    'move':move,
+                },
+                success: function(response) {
+                    console.log(response);
+
+                }
+                });
+        }
+
+
         $(document).ready(function(){
             window.array = [];
-            $('span').each(function () {
+            $("#board").find("span").each(function () {
                 window.array.push(this);
             });
             for (var i = 0; i < window.array.length; i++) {
                 $(window.array[i]).click(function () {
-                    putX((this.id));
+                    sendMove("{{$key}}",this.id);
+                    // putSymbol(this.id,'O');
                     console.log((this.id).split("-")[1]);
                 }
                 );
             }
-            putX();
         });
     </script>
 </head>
 <body class="">
     <center>
-    <h1>{{$player1}}  vs  {{$player2}}</h1><br />
+    <h1><span id="player1">{{$player1}}</span>  vs  <span id="player2">{{$player2}}</span></h1><br />
     </center>
     <div class="w-screen h-screen ctr">
         <div class="tabel ctr">
-            <div class="board">
+            <div class="board" id="board">
                 <span id="col-0"></span>
                 <span id="col-1"></span>
                 <span id="col-2"></span>

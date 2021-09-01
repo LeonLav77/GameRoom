@@ -3,11 +3,11 @@
 namespace App\Http\Controllers;
 
 use App\Events\MyEvent;
+use App\Events\SendMove;
 use App\Models\Active_Game;
 use Illuminate\Support\Str;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\Request;
-
+use Illuminate\Http\Request;
 class RoomController extends Controller
 {
     public function test(request $request)
@@ -51,5 +51,9 @@ class RoomController extends Controller
             ]);
             $room->save();
             return("created");
+    }
+    public function sendMove(request $request)
+    {
+        event(new SendMove($request->key, $request->move, Auth::id()));
     }
 }
