@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Events\MyEvent;
 use App\Events\SendMove;
+use App\Events\YourTurn;
 use App\Events\StartEvent;
 use App\Models\Active_Game;
 use Illuminate\Support\Str;
@@ -75,7 +76,6 @@ class RoomController extends Controller
         if (!Schema::hasTable($key)) {
             Schema::create($key, function ($table) {
                 $table->foreignId('user1')->nullable();
-                $table->foreignId('user2')->nullable();
             });
             DB::table($key)->insert([
                 'user1' => Auth::id()

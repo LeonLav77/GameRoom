@@ -26,9 +26,17 @@
             putSymbol(data.move,data.symbol);
         });
         channel.listen('StartEvent', function(data) {
+            alert(data.message + " " + data.player1 + " PLAYS FIRST");
             startGame();
         });
 
+        var channel2 = Echo.channel("a"+"{{$id}}");
+            channel2.listen('YourTurn', function(data) {
+                console.log(data);
+                if(data.player == "{{$player1}}"){
+                    $("#turn").html("Your Turn");
+                }
+            });
 
         function putSymbol(id,symbol){
             console.log(window.array);
@@ -42,7 +50,6 @@
             console.log(window.array);
         }
         function startGame(){
-            alert('STARTED I HOPE')
             startingMechancis();
         }
         function sendMove(key,move){
@@ -124,6 +131,7 @@
 <body class="">
     <center>
     <h1><span id="player1">{{$player1}}</span>  vs  <span id="player2">{{$player2}}</span></h1><br />
+    <h1 id="turn"></h1>
     </center>
     <div class="w-screen h-screen ctr">
         <div class="tabel ctr">

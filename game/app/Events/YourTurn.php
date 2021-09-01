@@ -3,7 +3,6 @@
 namespace App\Events;
 
 use App\Models\Message;
-use App\Events\YourTurn;
 use App\Models\Active_Game;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Broadcasting\Channel;
@@ -14,7 +13,7 @@ use Illuminate\Foundation\Events\Dispatchable;
 use Illuminate\Broadcasting\InteractsWithSockets;
 use Illuminate\Contracts\Broadcasting\ShouldBroadcast;
 
-class StartEvent implements ShouldBroadcast
+class YourTurn implements ShouldBroadcast
 {
     use Dispatchable, InteractsWithSockets, SerializesModels;
 
@@ -23,20 +22,16 @@ class StartEvent implements ShouldBroadcast
      *
      * @return void
      */
-    public string $key;
-    public int $idFirstPlayer;
-    public int $idSecondPlayer;
+    public int $id;
 
-    public function __construct(string $key)
+
+    public function __construct(int $id)
     {
-        $this->key = $key;
-        $firstUser = Active_Game::where('key', $this->key)->first()->player1;
-        $secondUser = Active_Game::where('key', $this->key)->first()->player2;
-        $this->idFirstPlayer = $firstUser->id;
+        $this->id = $id;
     }
     public function broadcastWith()
     {
-        return ['message'=> 'GAME STARTS', 'player1'=> $this->id];
+        return ['message'=> 'Your Turn'];
     }
     /**
      * Get the channels the event should broadcast on.
@@ -45,7 +40,6 @@ class StartEvent implements ShouldBroadcast
      */
     public function broadcastOn()
     {
-        event(new YourTurn($this->idFirstPlayer));
-        return new Channel($this->key);
+        return new Channel('a'."$this->id");
     }
 }

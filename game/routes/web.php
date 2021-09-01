@@ -29,6 +29,7 @@ Route::post('/sendStartNotif', [RoomController::class, 'sendStartNotif']);
 
 Route::post('/sendReadyNotification', [RoomController::class, 'sendReadyNotification']);
 
+
 Route::get('/game/{key}', [IndexController::class,'gameRoom']);
 
 Route::group(['middleware' => ['protectedPage']], function () {
