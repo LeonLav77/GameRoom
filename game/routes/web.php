@@ -29,6 +29,8 @@ Route::post('/sendStartNotif', [RoomController::class, 'sendStartNotif']);
 
 Route::post('/sendReadyNotification', [RoomController::class, 'sendReadyNotification']);
 
+Route::post('/logic', [LogicController::class, 'logic']);
+
 
 Route::get('/game/{key}', [IndexController::class,'gameRoom']);
 

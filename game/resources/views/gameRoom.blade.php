@@ -23,10 +23,21 @@
 
         channel.listen('SendMove', function(data) {
             console.log(data);
+            if(window.move == "Mine"){
+                $("#turn").html("Your Turn");
+            }else{
+                $("#turn").html("Opponent's Turn");
+            }
             putSymbol(data.move,data.symbol);
         });
         channel.listen('StartEvent', function(data) {
-            alert(data.message + " " + data.player1 + " PLAYS FIRST");
+            if("{{$id}}" == data.player1){
+                window.move = "Mine";
+                $("#turn").html("Your Turn");
+            }else{
+                window.move = "Opponent";
+                $("#turn").html("Opponent's Turn");
+            }
             startGame();
         });
 
@@ -34,18 +45,14 @@
             channel2.listen('YourTurn', function(data) {
                 console.log(data);
                 window.move = "Mine";
-                alert("MOJ POTEZ");
-                if(data.player == "{{$player1}}"){
-                    $("#turn").html("Your Turn");
-                }
+                //alert("MOJ POTEZ");
+
             });
             channel2.listen('NotYourTurn', function(data) {
                 console.log(data);
-                alert("NI MOJ POTEZ");
+                //alert("NI MOJ POTEZ");
                 window.move = "Not Mine";
-                if(data.player == "{{$player1}}"){
-                    $("#turn").html("Your Turn");
-                }
+
             });
         function putSymbol(id,symbol){
             console.log(window.array);
@@ -81,7 +88,7 @@
                 });
                 window.move = "Not Mine";
             }else{
-                alert("NI TU MOJ POTEZ");
+                alert("NI SEDA MOJ POTEZ");
             }
         }
 
@@ -145,7 +152,7 @@
 <body class="">
     <center>
     <h1><span id="player1">{{$player1}}</span>  vs  <span id="player2">{{$player2}}</span></h1><br />
-    <h1 id="turn"></h1>
+    <h1 id="turn">Are you ready to start?</h1>
     </center>
     <div class="w-screen h-screen ctr">
         <div class="tabel ctr">
