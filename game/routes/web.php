@@ -6,6 +6,7 @@ use Illuminate\Support\Facades\Route;
 use Illuminate\Foundation\Application;
 use App\Http\Controllers\RoomController;
 use App\Http\Controllers\IndexController;
+use App\Http\Controllers\LogicController;
 
 /*
 |--------------------------------------------------------------------------

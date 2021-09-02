@@ -16,20 +16,23 @@
         }
         var channel = Echo.channel("{{$key}}");
         channel.listen('GameRoomJoin', function(data) {
-            console.log(data);
             $("#player2").html(data.name);
             window.state = "ready";
         });
 
+
         channel.listen('SendMove', function(data) {
-            console.log(data);
+            window.tableState = data.tableState;
+            // alert(window.tableState);
             if(window.move == "Mine"){
                 $("#turn").html("Your Turn");
             }else{
                 $("#turn").html("Opponent's Turn");
             }
+
             putSymbol(data.move,data.symbol);
         });
+
         channel.listen('StartEvent', function(data) {
             if("{{$id}}" == data.player1){
                 window.move = "Mine";
@@ -41,21 +44,25 @@
             startGame();
         });
 
+
+        channel.listen('EventWon', function(data) {
+            alert(data);
+            console.log(data);
+        });
+
+
         var channel2 = Echo.channel("a"+"{{$id}}");
             channel2.listen('YourTurn', function(data) {
-                console.log(data);
                 window.move = "Mine";
-                //alert("MOJ POTEZ");
 
             });
+
             channel2.listen('NotYourTurn', function(data) {
-                console.log(data);
-                //alert("NI MOJ POTEZ");
                 window.move = "Not Mine";
 
             });
         function putSymbol(id,symbol){
-            console.log(window.array);
+            // console.log(window.array);
             $("#"+id).unbind();
             $currentElement = $('#'+id);
             let child = document.createElement('h4');
@@ -63,13 +70,16 @@
             child.innerHTML = symbol;
             $currentElement.append(child);
             (window.array).splice((id.split("-")[1]) ,1);
-            console.log(window.array);
+            // console.log(window.array);
         }
         function startGame(){
             startingMechancis();
         }
         function sendMove(key,move){
             if(window.move == "Mine"){
+            let moveIndex = (move).split("-")[1]
+            // window.tableState.splice(movee,1,symbol);
+            // najti nacin da posaljes symbol
             $.ajax({
                 dataType: 'json',
                 headers: {
@@ -80,9 +90,11 @@
                 data:{
                     'key':key,
                     'move':move,
+                    'moveIndex':moveIndex,
+                    'tableState':window.tableState
                 },
                 success: function(response) {
-                    console.log(response);
+                    // console.log(response);
 
                 }
                 });
@@ -104,14 +116,19 @@
                     'key':"{{$key}}",
                 },
                 success: function(response) {
-                    console.log(response);
+                    // console.log(response);
 
                 }
                 });
         }
 
         function startingMechancis(){
+            window.symbol = "X";
             window.array = [];
+            window.tableState = [];
+            for(let i = 1; i <= 9; i++){
+                window.tableState.push("");
+            }
             $("#board").find("span").each(function () {
                 window.array.push(this);
             });
@@ -119,7 +136,7 @@
                 $(window.array[i]).click(function () {
                     sendMove("{{$key}}",this.id);
                     // putSymbol(this.id,'O');
-                    console.log((this.id).split("-")[1]);
+                    // console.log((this.id).split("-")[1]);
                 }
                 );
             }
@@ -136,7 +153,7 @@
                     'key':"{{$key}}",
                 },
                 success: function(response) {
-                    console.log(response);
+                    // console.log(response);
                 }
                 });
         }

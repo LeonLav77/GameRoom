@@ -64,7 +64,9 @@ class RoomController extends Controller
         } else {
             $yourSymbol = 'O';
         }
-        event(new SendMove($request->key, $request->move, Auth::id(), $yourSymbol));
+        $tableState = $request->tableState;
+        $tableState[$request->moveIndex] = $yourSymbol;
+        event(new SendMove($request->key, $request->move, Auth::id(), $yourSymbol, $tableState));
     }
     public function sendStartNotif(request $request)
     {
