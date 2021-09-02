@@ -33,11 +33,20 @@
         var channel2 = Echo.channel("a"+"{{$id}}");
             channel2.listen('YourTurn', function(data) {
                 console.log(data);
+                window.move = "Mine";
+                alert("MOJ POTEZ");
                 if(data.player == "{{$player1}}"){
                     $("#turn").html("Your Turn");
                 }
             });
-
+            channel2.listen('NotYourTurn', function(data) {
+                console.log(data);
+                alert("NI MOJ POTEZ");
+                window.move = "Not Mine";
+                if(data.player == "{{$player1}}"){
+                    $("#turn").html("Your Turn");
+                }
+            });
         function putSymbol(id,symbol){
             console.log(window.array);
             $("#"+id).unbind();
@@ -53,6 +62,7 @@
             startingMechancis();
         }
         function sendMove(key,move){
+            if(window.move == "Mine"){
             $.ajax({
                 dataType: 'json',
                 headers: {
@@ -69,6 +79,10 @@
 
                 }
                 });
+                window.move = "Not Mine";
+            }else{
+                alert("NI TU MOJ POTEZ");
+            }
         }
 
         function sendStartNotif(){
