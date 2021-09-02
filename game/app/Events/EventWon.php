@@ -25,14 +25,16 @@ class EventWon implements ShouldBroadcast
      * @return void
      */
     public string $key;
+    public string $symbol;
 
-    public function __construct(string $key)
+    public function __construct(string $key,string $symbol)
     {
         $this->key = $key;
+        $this->symbol = $symbol;
     }
     public function broadcastWith()
     {
-        return ['message'=> 'GAME WON'];
+        return ['message'=> 'GAME WON','winner' => $this->symbol];
     }
     /**
      * Get the channels the event should broadcast on.

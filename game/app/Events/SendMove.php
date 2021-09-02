@@ -40,7 +40,7 @@ class SendMove implements ShouldBroadcast
         $user2 = Active_Game::where('key', $this->key)->first()->user2;
         $this->result = ($user1 == $this->id) ? $user2 : $user1;
         $this->yourSymbol = $yourSymbol;
-        $this->logic = $this->symbolLogic($this->tableState,"X",$this->key);
+        $this->logic = $this->symbolLogic($this->tableState,$yourSymbol,$this->key);
 
     }
 
@@ -59,6 +59,7 @@ class SendMove implements ShouldBroadcast
         event(new YourTurn($this->result));
         return new Channel($this->key);
     }
+
     public function symbolLogic($tableState,$symbol,$key){
         // PARALELNE
         if ($tableState[0] == $symbol && $tableState[1] == $symbol && $tableState[2] == $symbol) {
@@ -80,13 +81,20 @@ class SendMove implements ShouldBroadcast
         else if ($tableState[2] == $symbol && $tableState[5] == $symbol && $tableState[8] == $symbol) {
             return $this->callWin($key,$symbol);
         }
+        // KOSE
+        else if ($tableState[0] == $symbol && $tableState[4] == $symbol && $tableState[8] == $symbol) {
+            return $this->callWin($key,$symbol);
+        }
+        else if ($tableState[2] == $symbol && $tableState[4] == $symbol && $tableState[6] == $symbol) {
+            return $this->callWin($key,$symbol);
+        }
         else{
             return (json_encode($tableState));
         }
     }
     public function callWin($key,$symbol){
 
-        event(new EventWon($key));
+        event(new EventWon($key,$symbol));
         return json_encode($symbol." WON");
     }
 }

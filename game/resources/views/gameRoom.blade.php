@@ -46,7 +46,8 @@
 
 
         channel.listen('EventWon', function(data) {
-            alert(data);
+            $('#element_to_pop_up_two').bPopup({
+            });
             console.log(data);
         });
 
@@ -189,6 +190,9 @@
     </div>
     <div id="element_to_pop_up" style="display: none;" class="basic-grid">
         <h1>Are you ready</h1>
+    </div>
+    <div id="element_to_pop_up_two" style="display: none;" class="basic-grid">
+         <h1>GAME OVER!!</h1>
     </div>
 </body>
 </html>
