@@ -46,7 +46,13 @@
 
 
         channel.listen('EventWon', function(data) {
+            $("#gameOverScreen").html(data.winner + " WON THE GAME");
             $('#element_to_pop_up_two').bPopup({
+                    onClose: function(){
+                        window.location.href = "/";
+                        // odavdje ili da se deleta novi room, ili
+                        // da mozes opet idk
+                    }
             });
             console.log(data);
         });
@@ -192,7 +198,7 @@
         <h1>Are you ready</h1>
     </div>
     <div id="element_to_pop_up_two" style="display: none;" class="basic-grid">
-         <h1>GAME OVER!!</h1>
+         <h1 id="gameOverScreen">GAME OVER!!</h1>
     </div>
 </body>
 </html>
